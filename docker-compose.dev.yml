@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile
+    container_name: api
+    env_file:
+      - .env.dev
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    env_file:
+      - .env.dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data:/docker-entrypoint-initdb.d
+
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/migrate/Dockerfile
+    container_name: migrate
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

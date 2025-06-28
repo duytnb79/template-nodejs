@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+      target: production
+    container_name: api
+    ports:
+      - '3000:3000'
+
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/migrate/Dockerfile
+    container_name: migrate
